@@ -19,6 +19,7 @@ package command
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	iggcon "github.com/apache/iggy/foreign/go/contracts"
@@ -62,10 +63,10 @@ func TestPersonalAccessTokenCommandsMarshalBinary(t *testing.T) {
 			want:    []byte{0, 4, 3, 2, 1, 0, 0, 0, 0},
 		},
 		{
-			name:    "longer name",
-			request: &CreatePersonalAccessToken{Name: "my-access-token", Expiry: iggcon.IggyExpiryServerDefault},
+			name:    "token with 255-byte name",
+			request: &CreatePersonalAccessToken{Name: strings.Repeat("t", 255), Expiry: iggcon.IggyExpiryServerDefault},
 			code:    42,
-			want:    []byte{15, 'm', 'y', '-', 'a', 'c', 'c', 'e', 's', 's', '-', 't', 'o', 'k', 'e', 'n', 0, 0, 0, 0, 0, 0, 0, 0},
+			want:    append(append([]byte{255}, bytes.Repeat([]byte{'t'}, 255)...), 0, 0, 0, 0, 0, 0, 0, 0),
 		},
 		{
 			name:    "get tokens with no request payload",
@@ -86,10 +87,10 @@ func TestPersonalAccessTokenCommandsMarshalBinary(t *testing.T) {
 			want:    []byte{0},
 		},
 		{
-			name:    "longer name",
-			request: &DeletePersonalAccessToken{Name: "my-access-token"},
+			name:    "delete token with 255-byte name",
+			request: &DeletePersonalAccessToken{Name: strings.Repeat("t", 255)},
 			code:    43,
-			want:    []byte{15, 'm', 'y', '-', 'a', 'c', 'c', 'e', 's', 's', '-', 't', 'o', 'k', 'e', 'n'},
+			want:    append([]byte{255}, bytes.Repeat([]byte{'t'}, 255)...),
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
