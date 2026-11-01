@@ -24,10 +24,10 @@ import (
 	iggcon "github.com/apache/iggy/foreign/go/contracts"
 )
 
-func TestCreatePersonalAccessTokenMarshalBinary(t *testing.T) {
+func TestPersonalAccessTokenCommandsMarshalBinary(t *testing.T) {
 	for _, test := range []struct {
 		name    string
-		request *CreatePersonalAccessToken
+		request Command
 		code    Code
 		want    []byte
 	}{
@@ -67,58 +67,12 @@ func TestCreatePersonalAccessTokenMarshalBinary(t *testing.T) {
 			code:    42,
 			want:    []byte{15, 'm', 'y', '-', 'a', 'c', 'c', 'e', 's', 's', '-', 't', 'o', 'k', 'e', 'n', 0, 0, 0, 0, 0, 0, 0, 0},
 		},
-	} {
-		t.Run(test.name, func(t *testing.T) {
-			if got := test.request.Code(); got != test.code {
-				t.Fatalf("CreatePersonalAccessToken code = %d, want %d", got, test.code)
-			}
-			got, err := test.request.MarshalBinary()
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !bytes.Equal(got, test.want) {
-				t.Fatalf("CreatePersonalAccessToken body = %x, want %x", got, test.want)
-			}
-		})
-	}
-}
-
-func TestGetPersonalAccessTokensMarshalBinary(t *testing.T) {
-	for _, test := range []struct {
-		name    string
-		request *GetPersonalAccessTokens
-		code    Code
-		want    []byte
-	}{
 		{
-			name:    "empty body",
+			name:    "get tokens with no request payload",
 			request: &GetPersonalAccessTokens{},
 			code:    41,
 			want:    []byte{},
 		},
-	} {
-		t.Run(test.name, func(t *testing.T) {
-			if got := test.request.Code(); got != test.code {
-				t.Fatalf("GetPersonalAccessTokens code = %d, want %d", got, test.code)
-			}
-			got, err := test.request.MarshalBinary()
-			if err != nil {
-				t.Fatal(err)
-			}
-			if !bytes.Equal(got, test.want) {
-				t.Fatalf("GetPersonalAccessTokens body = %x, want %x", got, test.want)
-			}
-		})
-	}
-}
-
-func TestDeletePersonalAccessTokenMarshalBinary(t *testing.T) {
-	for _, test := range []struct {
-		name    string
-		request *DeletePersonalAccessToken
-		code    Code
-		want    []byte
-	}{
 		{
 			name:    "short name",
 			request: &DeletePersonalAccessToken{Name: "token"},
@@ -140,14 +94,14 @@ func TestDeletePersonalAccessTokenMarshalBinary(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			if got := test.request.Code(); got != test.code {
-				t.Fatalf("DeletePersonalAccessToken code = %d, want %d", got, test.code)
+				t.Fatalf("command code = %d, want %d", got, test.code)
 			}
 			got, err := test.request.MarshalBinary()
 			if err != nil {
 				t.Fatal(err)
 			}
 			if !bytes.Equal(got, test.want) {
-				t.Fatalf("DeletePersonalAccessToken body = %x, want %x", got, test.want)
+				t.Fatalf("command body = %x, want %x", got, test.want)
 			}
 		})
 	}
