@@ -17,7 +17,7 @@
 
 [package]
 name = "iggy-gateway-kafka"
-version = "0.1.0-edge.1"
+version = "0.1.0-edge.2"
 description = "Kafka wire protocol gateway foundation for Apache Iggy"
 edition = "2024"
 license = "Apache-2.0"
@@ -39,6 +39,9 @@ base64 = { workspace = true }
 bytes = { workspace = true }
 futures = { workspace = true }
 iggy = { workspace = true }
+# `with_binary_deadline`, which hands a Produce request's deadline to the SDK. The prelude does not
+# export it.
+iggy_common = { workspace = true }
 iggy_kafka_wire = { workspace = true }
 # The codec features stay on for the encoder, which the batch tests use to build fixtures.
 kafka-protocol = { workspace = true, features = ["gzip", "lz4", "snappy", "zstd"] }
